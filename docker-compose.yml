@@ -1,0 +1,89 @@
+
+services:
+  mysql_categories:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: categoriesdb
+      MYSQL_PASSWORD: root
+    ports:
+      - "3307:3306"
+    command:
+      - --bind-address=0.0.0.0
+    volumes:
+      - mysql_categories_data:/var/lib/mysql
+    networks:
+      - my_network
+
+  mysql_purchases:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: purchasesdb
+      MYSQL_PASSWORD: root
+    ports:
+      - "3308:3306"
+    command:
+      - --bind-address=0.0.0.0
+    volumes:
+      - mysql_purchases_data:/var/lib/mysql
+    networks:
+      - my_network
+
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb-docker
+    ports:
+      - "27018:27017"  # Mapeamos el puerto 27017 del contenedor al 27018 en la máquina local
+    volumes:
+      - mongodb_data:/data/db
+    restart: always
+    networks:
+      - my_network
+
+  product:
+    build:
+      context: /product
+    ports:
+      - "8081:8080"
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/productsdb
+    networks:
+      - my_network
+
+  category:
+    build:
+      context: /category
+    ports:
+      - "8082:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql_categories:3306/categoriesdb
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    networks:
+      - my_network
+
+  purchase:
+    build:
+      context: /purchase
+    ports:
+      - "8083:8080"
+    environment:
+          - SPRING_DATASOURCE_URL=jdbc:mysql://mysql_purchases:3306/purchasesdb
+          - SPRING_DATASOURCE_USERNAME=root
+          - SPRING_DATASOURCE_PASSWORD=root
+    networks:
+      - my_network
+
+volumes:
+  mysql_categories_data:
+    driver: local
+  mysql_purchases_data:
+    driver: local
+  mongodb_data:
+    driver: local
+
+networks:
+  my_network:
+    driver: bridge
