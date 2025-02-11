@@ -35,7 +35,7 @@ services:
     image: mongo:latest
     container_name: mongodb-docker
     ports:
-      - "27018:27017"  # Mapeamos el puerto 27017 del contenedor al 27018 en la máquina local
+      - "27018:27017"
     volumes:
       - mongodb_data:/data/db
     restart: always

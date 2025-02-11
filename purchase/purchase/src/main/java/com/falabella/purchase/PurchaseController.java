@@ -1,8 +1,10 @@
 package com.falabella.purchase;
 
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
@@ -10,27 +12,24 @@ import java.util.List;
 @RequestMapping("/purchases")
 public class PurchaseController {
 
-    @Autowired
-    private PurchaseService purchaseService;
+    private final PurchaseService purchaseService;
 
-    @GetMapping
-    public List<Purchase> getAllPurchases() {
-        return purchaseService.getAllPurchase();
+    public PurchaseController(PurchaseService purchaseService) {
+        this.purchaseService = purchaseService;
     }
 
     @PostMapping
-    public Purchase addPurchase(@RequestBody Purchase purchase) {
-        return purchaseService.addPurchase(purchase);
-    }
+    public Purchase createPurchase(@RequestBody Purchase purchase) {
+        System.out.println("voy a crear una compraaa------------>");
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            String json = objectMapper.writeValueAsString(purchase);
+            System.out.println("JSON recibido: " + json);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-    @PutMapping("/{id}")
-    public Purchase updateOrder(@PathVariable Long id, @RequestBody Purchase purchase) {
-        return purchaseService.updatePurchase(id, purchase);
-    }
-
-    @DeleteMapping("/{id}")
-    public void deleteOrder(@PathVariable Long id) {
-        purchaseService.deletePurchase(id);
+        return purchaseService.createPurchase(purchase);
     }
 
 

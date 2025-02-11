@@ -1,9 +1,11 @@
 package com.falabella.purchase;
 
 
+import com.falabella.purchase.client.Client;
+import com.falabella.purchase.purchaseProduct.PurchaseProduct;
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -11,23 +13,15 @@ public class Purchase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String customerName;
-    private LocalDate date;
-    private String status;
-    private String testField;
 
-    /*
-    @ElementCollection
-    private List<String> products;
-    */
+    @ManyToOne
+    @JoinColumn(name="client_id",nullable = false)
+    private Client client;
 
-    public LocalDate getDate() {
-        return date;
-    }
+    @OneToMany(mappedBy = "purchase", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private List<PurchaseProduct> purchaseProducts = new ArrayList<>();
 
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
+    private double total;
 
     public Long getId() {
         return id;
@@ -37,38 +31,30 @@ public class Purchase {
         this.id = id;
     }
 
-    public String getStatus() {
-        return status;
+    public Client getClient() {
+        return client;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setClient(Client client) {
+        this.client = client;
     }
 
-    /*
-    public List<String> getProducts() {
-        return products;
+    public double getTotal() {
+        return total;
     }
 
-    public void setProducts(List<String> products) {
-        this.products = products;
-    }
-    */
-
-    public String getCustomerName() {
-        return customerName;
+    public void setTotal(double total) {
+        this.total = total;
     }
 
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
+    public List<PurchaseProduct> getPurchaseProducts() {
+        return purchaseProducts;
     }
 
-    public String getTestField() {
-        return testField;
+    public void setPurchaseProducts(List<PurchaseProduct> purchaseProducts) {
+        this.purchaseProducts = purchaseProducts;
     }
 
-    public void setTestField(String testField) {
-        this.testField = testField;
-    }
+
 }
 
