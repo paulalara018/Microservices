@@ -33,16 +33,26 @@ public class PurchaseService {
 
     @Transactional
     public Purchase createPurchase(Purchase purchase) {
+        ObjectMapper objectMapper = new ObjectMapper();
+
         Client client = clientRepository.findById(purchase.getClient().getId())
                 .orElseThrow(() -> new RuntimeException("Client not found"));
         purchase.setClient(client);
         purchase.setTotal(0);
+
         System.out.println("Id del cliente es--->");
         System.out.println(purchase.getClient().getId());
+
         System.out.println(purchase.getTotal());
 
         purchase=purchaseRepository.save(purchase);
-        System.out.println("Se guardo la compra del cliente es--->"+purchase);
+
+        try {
+            String jsonPurchase = objectMapper.writeValueAsString(purchase);
+            System.out.println("JSON purchase inicial--->"+jsonPurchase);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
             double totalCompra = 0;
 
@@ -59,18 +69,19 @@ public class PurchaseService {
                 purchaseProduct.setUnit_price(product.getPrice());
                 purchaseProduct.setSubtotal(subTotal);
 
-                System.out.println("subtotal");
-                System.out.println(purchaseProduct.getSubtotal());
-
                 try {
-                    ObjectMapper objectMapper = new ObjectMapper();
+
+                    String jsonPurchase = objectMapper.writeValueAsString(purchase);
                     String json = objectMapper.writeValueAsString(purchaseProduct);
-                    System.out.println("JSON purchaseProduct---: " + json);
+
+                    System.out.println("JSON purchase--->: " + jsonPurchase);
+                    System.out.println("JSON purchaseProduct--->: " + json);
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-                purchaseProductRepository.save(purchaseProduct);
+                //purchaseProductRepository.save(purchaseProduct);
             }
 
         purchase.setTotal(totalCompra);

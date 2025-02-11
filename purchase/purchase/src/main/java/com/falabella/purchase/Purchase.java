@@ -3,6 +3,7 @@ package com.falabella.purchase;
 
 import com.falabella.purchase.client.Client;
 import com.falabella.purchase.purchaseProduct.PurchaseProduct;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -18,7 +19,10 @@ public class Purchase {
     @JoinColumn(name="client_id",nullable = false)
     private Client client;
 
-    @OneToMany(mappedBy = "purchase", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    /*orphanRemoval=true, indica que si un objeto purchaseProduct se elimina también se elimina de la base de datos*/
+    /*mappedBy indica que la propiedad purchase en PurchaseProduct es la que maneja la relación de la base de datos*/
+    @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<PurchaseProduct> purchaseProducts = new ArrayList<>();
 
     private double total;

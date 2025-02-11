@@ -1,6 +1,7 @@
 package com.falabella.purchase.purchaseProduct;
 
 import com.falabella.purchase.Purchase;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -13,6 +14,7 @@ public class PurchaseProduct {
 
     @ManyToOne
     @JoinColumn(name = "purchase_id")
+    @JsonBackReference
     private Purchase purchase;
 
     private String productId;

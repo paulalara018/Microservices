@@ -38,8 +38,8 @@ public class ProductController {
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable String id) {
         try {
-            Product category = productService.getProductById(id);
-            return ResponseEntity.ok(category);
+            Product product = productService.getProductById(id);
+            return ResponseEntity.ok(product);
         }catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
